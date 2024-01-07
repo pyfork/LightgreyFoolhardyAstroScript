@@ -8,6 +8,9 @@ color bearishShapeColor = input(color.new(#fccbcd, 0), "Bearish Shape Color")
 color bullishTextColor = input(color.new(#4caf50, 0), "Bullish Text Color")
 color bearishTextColor = input(color.new(#f77c80, 0), "Bearish Text Color")
 
+// User-defined input for percent change threshold
+float percentChangeThreshold = input.float(0.05, title="Percent Change Threshold", minval=0.01, maxval=5.0)
+
 var float haOpen = na  // Declare haOpen with an initial value
 var float haClose = na  // Declare haClose with an initial value
 
@@ -37,9 +40,9 @@ if consecCandles >= 5
     percentChange := 100 * (haClose - firstClose) / firstClose
 percentChange := math.abs(percentChange)
 
-// Condition for 5 consecutive candles of the same type with a total percent change greater than 0.05%
-longCondition = consecCandles >= 5 and haType == 1 and percentChange > 0.05
-shortCondition = consecCandles >= 5 and haType == -1 and percentChange > 0.05
+// Condition for 5 consecutive candles of the same type with a total percent change greater than user-defined threshold
+longCondition = consecCandles >= 5 and haType == 1 and percentChange > percentChangeThreshold
+shortCondition = consecCandles >= 5 and haType == -1 and percentChange > percentChangeThreshold
 
 // Plotting the signal with user-defined color for shape and text
 plotshape(series=longCondition, location=location.belowbar, color=bullishShapeColor, style=shape.labelup, textcolor=bullishTextColor, text="Bullish 5HA")
